@@ -1,8 +1,10 @@
 # flag : flag{wh04m1_15_pr0ud_0f_y0u}
 
+
 import subprocess
 import numpy as np
-import subprocess
+import random
+
 
 # Define a function to handle interactive communication
 def interact_with_executable():
@@ -20,18 +22,26 @@ def interact_with_executable():
     while True:
         # Wait for the executable to output some data
         output = []
+        lost = False
         for i in range(10):
             output_line = process.stdout.readline().strip()
             
             if (output_line[0] == "G"):
                 output_line = process.stdout.readline().strip()
+            if (output_line[0] == "Y"):
+                lost = True
             
-            print(output_line)
+            if ("flag" in output_line):
+                print(output_line)
+
             output.append(output_line)
-        # Process the output, if needed, to decide the next input
+            
+        if (lost):
+            break
+        
+        # Process the output to decide the next input
         next_input = process_output_and_get_input(output)
-        print(next_input)
-        print("\n\n\n")
+
         if (next_input == "break"):
             break
         
@@ -41,6 +51,7 @@ def interact_with_executable():
 
     # Close the standard input of the process
     process.stdin.close()
+
 
 # i --> row  |  j --> column
 def output_to_array(output):
@@ -471,7 +482,7 @@ def process_output_and_get_input(output):
         for j in range(9):
             if (gamestate[i][j] == (adjacent_unknowns(gamestate, i, j) + adjacent_mines(gamestate, i, j))):
                 mark_mines(gamestate, i, j)
-    print(gamestate)
+
     # Run-through, trying to find a safe move
     for i in range(9):
         for j in range(9):
@@ -481,12 +492,18 @@ def process_output_and_get_input(output):
                     return(f"{valid_move[0]},{valid_move[1]}")
     
     # Return a random valid move
-    if ((gamestate == np.full((9,9), -1, dtype=int)).sum() == 81):
-        return("2,4")
-
-    return ("break")
+    valid_moves = []
+    for i in range(9):
+        for j in range(9):
+            if (gamestate[i][j] == -1):
+                valid_moves.append([i,j])
+    valid_move = valid_moves[random.randrange(0, len(valid_moves))]
+    
+    return(f"{valid_move[0]},{valid_move[1]}")
 
 
 # Call the function
-interact_with_executable()
+
+while (1):
+    interact_with_executable()
 
