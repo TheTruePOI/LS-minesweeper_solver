@@ -15,5 +15,9 @@
 
 ## Part-2: LS 9.11 Emulator
 
+### Flag
+> flag{s0_s3cr3t_y3t_s0_fr33}
+
 ### Relevant files in the repository
 - emulator.c
+- emulator.o
